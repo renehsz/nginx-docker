@@ -1,0 +1,12 @@
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:80"
+      - "8443:443"
+    volumes:
+      - ~/projects/phosta/website/dist:/var/www/html:ro
+      - conf:/opt/nginx/nginx-conf:ro
+      - certs:/opt/nginx/nginx-certs:ro
