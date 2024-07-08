@@ -1,4 +1,4 @@
-.PHONY: run gencert
+.PHONY: run gencert build-image push-image
 
 run:
 	docker-compose up --build --force-recreate --no-deps
@@ -11,5 +11,9 @@ gencert:
 		openssl x509 -req -in server.csr -out pki/server.crt -CA cacert/CA.crt -CAkey CA.key -CAcreateserial -days 365 && \
 		echo Done.'
 
+build-image:
+	docker buildx build --load -t renehsz/nginx:latest --platform linux/amd64,linux/arm64 .
 
+push-image:
+	docker image push renehsz/nginx:latest
 
