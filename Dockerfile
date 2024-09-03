@@ -119,6 +119,9 @@ RUN \
 
 RUN strip ${OPENSSL_ROOT_DIR}/lib/*.a ${OPENSSL_ROOT_DIR}/lib64/ossl-modules/*.so $INSTALLDIR/sbin/*
 
+# get the library out of the architecture-specific directory
+RUN cp /usr/lib/`lscpu | awk '/Architecture/{ print $2 }'`-linux-gnu/libpcre.so* /usr/lib/
+
 #
 #  Run Nginx
 #
@@ -133,7 +136,7 @@ COPY --from=builder /build/lua-libs/lua-resty-core/lib/resty/core.lua ./resty/co
 COPY --from=builder /build/lua-libs/lua-resty-lrucache/lib/resty/lrucache ./resty/lrucache
 COPY --from=builder /build/lua-libs/lua-resty-lrucache/lib/resty/lrucache.lua ./resty/lrucache.lua
 COPY --from=builder /usr/local/lib/libluajit-5.1.so* /usr/lib/
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libpcre.so* /usr/lib/
+COPY --from=builder /usr/lib/libpcre.so* /usr/lib/
 
 RUN ln -sf /dev/stdout $INSTALLDIR/logs/access.log && \
     ln -sf /dev/stderr $INSTALLDIR/logs/error.log
