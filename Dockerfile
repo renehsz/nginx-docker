@@ -18,25 +18,25 @@ RUN apt-get update && apt-get install -y \
 
 # Download everything
 WORKDIR /build/nginx
-RUN curl -L https://nginx.org/download/nginx-1.25.3.tar.gz | tar xz --strip-components=1
+RUN curl -L https://nginx.org/download/nginx-1.27.1.tar.gz | tar xz --strip-components=1
 #WORKDIR /opt/zlib-ng
 #RUN curl -L https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.1.5.tar.gz | tar xz --strip-components=1
 WORKDIR /build/nginx-modules
 RUN git clone --recurse-submodules https://github.com/google/ngx_brotli && git -C ngx_brotli reset --hard a71f931
 RUN git clone --recurse-submodules https://github.com/vision5/ngx_devel_kit.git && git -C ngx_devel_kit checkout tags/v0.3.3
-RUN git clone --recurse-submodules https://github.com/openresty/lua-nginx-module.git && git -C lua-nginx-module checkout tags/v0.10.25
+RUN git clone --recurse-submodules https://github.com/openresty/lua-nginx-module.git && git -C lua-nginx-module checkout tags/v0.10.27
 WORKDIR /build/luajit2
-RUN git clone --recurse-submodules https://github.com/openresty/luajit2.git . && git checkout tags/v2.1-20231117
+RUN git clone --recurse-submodules https://github.com/openresty/luajit2.git . && git checkout tags/v2.1-20240815
 WORKDIR /build/lua-libs/lua-resty-core
-RUN curl -L https://github.com/openresty/lua-resty-core/archive/refs/tags/v0.1.27.tar.gz | tar xz --strip-components=1
+RUN curl -L https://github.com/openresty/lua-resty-core/archive/refs/tags/v0.1.29.tar.gz | tar xz --strip-components=1
 WORKDIR /build/lua-libs/lua-resty-lrucache
-RUN curl -L https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v0.13.tar.gz | tar xz --strip-components=1
+RUN curl -L https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v0.14.tar.gz | tar xz --strip-components=1
 WORKDIR /opt/openssl
-RUN curl -L https://www.openssl.org/source/openssl-3.2.0.tar.gz | tar xz --strip-components=1
+RUN curl -L https://github.com/openssl/openssl/releases/download/openssl-3.3.2/openssl-3.3.2.tar.gz | tar xz --strip-components=1
 WORKDIR /build/liboqs
-RUN curl -L https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.9.1.tar.gz | tar xz --strip-components=1
+RUN curl -L https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.10.1.tar.gz | tar xz --strip-components=1
 WORKDIR /build/oqs-provider
-RUN curl -L https://github.com/open-quantum-safe/oqs-provider/archive/refs/tags/0.5.2.tar.gz | tar xz --strip-components=1
+RUN curl -L https://github.com/open-quantum-safe/oqs-provider/archive/refs/tags/0.6.1.tar.gz | tar xz --strip-components=1
 
 # Build and install brotli
 WORKDIR /build/nginx-modules/ngx_brotli/deps/brotli/out
