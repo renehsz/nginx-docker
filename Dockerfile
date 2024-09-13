@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     build-essential git curl cmake \
     zlib1g-dev libaio-dev libpcre3-dev
 
-# Download everything
+# Download and extract everything
 WORKDIR /build/nginx
 RUN curl -L https://nginx.org/download/nginx-1.27.1.tar.gz | tar xz --strip-components=1
 #WORKDIR /opt/zlib-ng
@@ -31,6 +31,8 @@ WORKDIR /build/lua-libs/lua-resty-core
 RUN curl -L https://github.com/openresty/lua-resty-core/archive/refs/tags/v0.1.29.tar.gz | tar xz --strip-components=1
 WORKDIR /build/lua-libs/lua-resty-lrucache
 RUN curl -L https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v0.14.tar.gz | tar xz --strip-components=1
+WORKDIR /build/lua-libs/lua-cjson
+RUN curl -L https://github.com/openresty/lua-cjson/archive/refs/tags/2.1.0.9.tar.gz | tar xz --strip-components=1
 WORKDIR /opt/openssl
 RUN curl -L https://github.com/openssl/openssl/releases/download/openssl-3.3.2/openssl-3.3.2.tar.gz | tar xz --strip-components=1
 WORKDIR /build/liboqs
@@ -58,6 +60,11 @@ RUN make
 RUN make install
 ENV LUAJIT_LIB=/usr/local/lib
 ENV LUAJIT_INC=/usr/local/include/luajit-2.1
+
+# Build and install lua-cjson
+WORKDIR /build/lua-libs/lua-cjson
+RUN make LUA_INCLUDE_DIR=$LUAJIT_INC
+RUN make install
 
 # Build and install OpenSSL
 #WORKDIR /opt/openssl
@@ -135,6 +142,7 @@ COPY --from=builder /build/lua-libs/lua-resty-core/lib/resty/core ./resty/core
 COPY --from=builder /build/lua-libs/lua-resty-core/lib/resty/core.lua ./resty/core.lua
 COPY --from=builder /build/lua-libs/lua-resty-lrucache/lib/resty/lrucache ./resty/lrucache
 COPY --from=builder /build/lua-libs/lua-resty-lrucache/lib/resty/lrucache.lua ./resty/lrucache.lua
+COPY --from=builder /build/lua-libs/lua-cjson/cjson.so /usr/local/lib/lua/5.1/
 COPY --from=builder /usr/local/lib/libluajit-5.1.so* /usr/lib/
 COPY --from=builder /usr/lib/libpcre.so* /usr/lib/
 
