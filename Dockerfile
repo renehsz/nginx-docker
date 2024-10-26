@@ -14,7 +14,7 @@ ENV INSTALLDIR=/opt/nginx
 #    linux-headers pcre-dev libaio-dev
 RUN apt-get update && apt-get install -y \
     build-essential git curl cmake \
-    zlib1g-dev libaio-dev libpcre3-dev
+    zlib1g-dev libzstd-dev libaio-dev libpcre3-dev
 
 # Download and extract everything
 WORKDIR /build/nginx
@@ -23,6 +23,9 @@ RUN curl -L https://nginx.org/download/nginx-1.27.2.tar.gz | tar xz --strip-comp
 #RUN curl -L https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.1.5.tar.gz | tar xz --strip-components=1
 WORKDIR /build/nginx-modules
 RUN git clone --recurse-submodules https://github.com/google/ngx_brotli && git -C ngx_brotli reset --hard a71f931
+WORKDIR /build/nginx-modules/ngx_zstd
+RUN curl -L https://github.com/tokers/zstd-nginx-module/archive/refs/tags/0.1.1.tar.gz | tar xz --strip-components=1
+WORKDIR /build/nginx-modules
 RUN git clone --recurse-submodules https://github.com/vision5/ngx_devel_kit.git && git -C ngx_devel_kit checkout tags/v0.3.3
 RUN git clone --recurse-submodules https://github.com/openresty/lua-nginx-module.git && git -C lua-nginx-module checkout tags/v0.10.27
 WORKDIR /build/luajit2
@@ -87,6 +90,7 @@ RUN ./configure \
     --with-cc-opt="-Ofast -flto -fPIE -I$INSTALLDIR/include" \
     --with-ld-opt="-Wl,-rpath,/usr/local/lib -L$INSTALLDIR/lib -flto -pie -Wl,-z,relro -Wl,-z,now" \
     --add-module=/build/nginx-modules/ngx_brotli \
+    --add-module=/build/nginx-modules/ngx_zstd \
     --add-module=/build/nginx-modules/ngx_devel_kit \
     --add-module=/build/nginx-modules/lua-nginx-module \
     --with-openssl=/opt/openssl \
@@ -145,6 +149,7 @@ COPY --from=builder /build/lua-libs/lua-resty-lrucache/lib/resty/lrucache.lua ./
 COPY --from=builder /build/lua-libs/lua-cjson/cjson.so /usr/local/lib/lua/5.1/
 COPY --from=builder /usr/local/lib/libluajit-5.1.so* /usr/lib/
 COPY --from=builder /usr/lib/libpcre.so* /usr/lib/
+COPY --from=builder /usr/lib/libzstd.so* /usr/lib/
 
 RUN ln -sf /dev/stdout $INSTALLDIR/logs/access.log && \
     ln -sf /dev/stderr $INSTALLDIR/logs/error.log
