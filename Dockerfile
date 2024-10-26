@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 
 # Download and extract everything
 WORKDIR /build/nginx
-RUN curl -L https://nginx.org/download/nginx-1.27.1.tar.gz | tar xz --strip-components=1
+RUN curl -L https://nginx.org/download/nginx-1.27.2.tar.gz | tar xz --strip-components=1
 #WORKDIR /opt/zlib-ng
 #RUN curl -L https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.1.5.tar.gz | tar xz --strip-components=1
 WORKDIR /build/nginx-modules
