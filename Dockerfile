@@ -25,6 +25,8 @@ WORKDIR /build/nginx-modules
 RUN git clone --recurse-submodules https://github.com/google/ngx_brotli && git -C ngx_brotli reset --hard a71f931
 WORKDIR /build/nginx-modules/ngx_zstd
 RUN curl -L https://github.com/tokers/zstd-nginx-module/archive/refs/tags/0.1.1.tar.gz | tar xz --strip-components=1
+WORKDIR /build/nginx-modules/headers-more
+RUN curl -L https://github.com/openresty/headers-more-nginx-module/archive/refs/tags/v0.38.tar.gz | tar xz --strip-components=1
 WORKDIR /build/nginx-modules
 RUN git clone --recurse-submodules https://github.com/vision5/ngx_devel_kit.git && git -C ngx_devel_kit checkout tags/v0.3.3
 RUN git clone --recurse-submodules https://github.com/openresty/lua-nginx-module.git && git -C lua-nginx-module checkout tags/v0.10.28
@@ -93,6 +95,7 @@ RUN ./configure \
     --with-ld-opt="-Wl,-rpath,/usr/local/lib -L$INSTALLDIR/lib -flto -pie -Wl,-z,relro -Wl,-z,now" \
     --add-module=/build/nginx-modules/ngx_brotli \
     --add-module=/build/nginx-modules/ngx_zstd \
+    --add-module=/build/nginx-modules/headers-more \
     --add-module=/build/nginx-modules/ngx_devel_kit \
     --add-module=/build/nginx-modules/lua-nginx-module \
     --with-openssl=/opt/openssl \
