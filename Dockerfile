@@ -39,9 +39,7 @@ RUN curl -L https://github.com/openresty/lua-resty-lrucache/archive/refs/tags/v0
 WORKDIR /build/lua-libs/lua-cjson
 RUN curl -L https://github.com/openresty/lua-cjson/archive/refs/tags/2.1.0.9.tar.gz | tar xz --strip-components=1
 WORKDIR /opt/openssl
-#RUN curl -L https://github.com/openssl/openssl/releases/download/openssl-3.4.0/openssl-3.4.0.tar.gz | tar xz --strip-components=1
-# TODO: Go back to release once https://github.com/openssl/openssl/pull/24384 is in there
-RUN git clone --recurse-submodules https://github.com/openssl/openssl.git . && git checkout d466672
+RUN curl -L https://github.com/openssl/openssl/releases/download/openssl-3.5.0/openssl-3.5.0.tar.gz | tar xz --strip-components=1
 WORKDIR /build/liboqs
 RUN curl -L https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.12.0.tar.gz | tar xz --strip-components=1
 WORKDIR /build/oqs-provider
