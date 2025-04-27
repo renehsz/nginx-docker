@@ -82,6 +82,7 @@ RUN make install
 
 # Build and install liboqs
 WORKDIR /build/liboqs/build
+ENV OPENSSL_ROOT_DIR="/opt/openssl/.openssl"
 RUN cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTALLDIR -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DOQS_USE_OPENSSL=OFF -DOQS_BUILD_ONLY_LIB=ON -DOQS_DIST_BUILD=ON ..
 RUN make
 RUN make install
@@ -158,9 +159,6 @@ COPY --from=builder /usr/lib/libzstd.so* /usr/lib/
 
 RUN ln -sf /dev/stdout $INSTALLDIR/logs/access.log && \
     ln -sf /dev/stderr $INSTALLDIR/logs/error.log
-
-# The default config causes Nginx to crash on startup for unknown reasons... so we'll just delete it for now
-RUN rm -f /opt/openssl/.openssl/ssl/openssl.cnf
 
 # From nginx 1.25.2: "nginx does not try to load OpenSSL configuration if the --with-openssl option was used to built OpenSSL and the OPENSSL_CONF environment variable is not set".
 # We therefore have to set the OPENSSL_CONF environment variable.
