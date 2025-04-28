@@ -41,7 +41,7 @@ RUN curl -L https://github.com/openresty/lua-cjson/archive/refs/tags/2.1.0.9.tar
 WORKDIR /opt/openssl
 RUN curl -L https://github.com/openssl/openssl/releases/download/openssl-3.5.0/openssl-3.5.0.tar.gz | tar xz --strip-components=1
 WORKDIR /build/liboqs
-RUN curl -L https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.12.0.tar.gz | tar xz --strip-components=1
+RUN curl -L https://github.com/open-quantum-safe/liboqs/archive/refs/tags/0.13.0.tar.gz | tar xz --strip-components=1
 WORKDIR /build/oqs-provider
 RUN curl -L https://github.com/open-quantum-safe/oqs-provider/archive/refs/tags/0.8.0.tar.gz | tar xz --strip-components=1
 
