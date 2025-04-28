@@ -86,14 +86,19 @@ RUN make
 RUN make install
 
 # Build and install Nginx
+#
 # We cannot link statically because Lua needs to load symbols dynamically. https://github.com/openresty/lua-nginx-module/issues/2106
+#
+# We add the brotli module after the zstd module because we prefer it for its slightly better compression ratio.
+# See https://github.com/tokers/zstd-nginx-module/issues/40
+#
 WORKDIR /build/nginx
 RUN ./configure \
     --prefix=$INSTALLDIR \
     --with-cc-opt="-Ofast -flto -fPIE -I$INSTALLDIR/include" \
     --with-ld-opt="-Wl,-rpath,/usr/local/lib -L$INSTALLDIR/lib -flto -pie -Wl,-z,relro -Wl,-z,now" \
-    --add-module=/build/nginx-modules/ngx_brotli \
     --add-module=/build/nginx-modules/ngx_zstd \
+    --add-module=/build/nginx-modules/ngx_brotli \
     --add-module=/build/nginx-modules/headers-more \
     --add-module=/build/nginx-modules/ngx_devel_kit \
     --add-module=/build/nginx-modules/lua-nginx-module \
